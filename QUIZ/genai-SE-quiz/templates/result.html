@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Result</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Include Chart.js library -->
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #120E43, #9D0191); /* Gradient from deep blue to magenta */
+            color: #e0e0e0; /* Light grey text for good contrast */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            min-height: 100vh;
+        }
+
+        header {
+            width: 100%;
+            background-color: #162447;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+        }
+
+        header h1 {
+            font-size: 24px;
+            margin: 0;
+            color: #f5f5f5;
+            text-align: left;
+            flex-grow: 1;
+        }
+
+        .subtitle {
+            font-size: 16px;
+        }
+
+        .container {
+            background: #2c2c54;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 800px;
+            margin-top: 150px; /* Add margin to account for fixed header */
+            animation: fadeIn 1s ease-in-out;
+            align-items: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center contents horizontally */
+        }
+
+        .result-message {
+            font-size: 20px;
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            color: #ffffff;
+            background-color: {% if passed %}#28a745{% else %}#dc3545{% endif %};
+        }
+
+        .score-details {
+            margin-top: 20px;
+            font-size: 20px;
+            color: #cfd8dc;
+        }
+
+        .warning-message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            background-color: #dc3545;
+            color: #ffffff;
+            font-size: 18px;
+            animation: pulse 1.5s infinite; /* Add animation */
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 0 5px rgba(255, 0, 0, 0.8);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 15px rgba(255, 0, 0, 1);
+            }
+        }
+
+        .review-section {
+            text-align: left;
+            margin-top: 30px;
+            font-size: 14px;
+            width: 100%; /* Ensure full width */
+        }
+
+        .question {
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: #444444;
+        }
+
+        .question h3 {
+            margin: 0;
+        }
+
+        .options {
+            margin-top: 10px;
+        }
+
+        .correct {
+            color: #28a745;
+        }
+
+        .incorrect {
+            color: #dc3545;
+        }
+
+        button {
+            background-color: #6200ea;
+            color: #ffffff;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #3700b3;
+            transform: scale(1.05);
+        }
+
+        canvas {
+            max-width: 100%; /* Allow canvas to scale */
+            max-height: 300px; /* Ensure the canvas fills the container */
+        }
+
+        .chart-container {
+            margin-top: 50px;
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            justify-content: center; /* Center chart horizontally */
+            align-items: center; /* Center chart vertically */
+            height: 300px; /* Define height to ensure centering */
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const container = document.querySelector('.container');
+            container.classList.add('fade-in');
+
+            // Create chart
+            const ctx = document.getElementById('resultChart').getContext('2d');
+            const resultChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Correct', 'Incorrect'],
+                    datasets: [{
+                        data: [{{ score }}, {{ total_questions - score }}],
+                        backgroundColor: ['#28a745', '#dc3545'],
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#f5f5f5',  // Set the color of the legend text
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <header>
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="logo">
+        <h1>Social Media Scam Knowledge Check<br/><span class="subtitle">Powered by Large Language Model (Generative AI)</span></h1>
+        <img src="{{ url_for('static', filename='l.png') }}" alt="New Logo" class="logo2">
+        <img src="{{ url_for('static', filename='g.png') }}" alt="New Logo" class="logo1">
+        <img src="{{ url_for('static', filename='m.png') }}" alt="New Logo" class="logo1">
+    </header>
+    <div class="container">
+        <div class="result-message">
+            {% if passed %}
+                Congratulations! You passed the quiz!
+            {% else %}
+                Sorry, you did not pass the quiz.
+            {% endif %}
+        </div>
+        <div class="score-details">
+            Your Score: {{ score }} / {{ total_questions }}
+        </div>
+        {% if not passed %}
+        <div class="warning-message">
+            ⚠️ <b>Attention Required:</b> Your understanding of social media scams needs improvement. Please revisit the learning materials and take preventive measures to protect your digital identity.
+        </div>
+        {% endif %}
+        <div class="chart-container">
+            <canvas id="resultChart"></canvas> <!-- Canvas for the chart -->
+        </div>
+        <div class="review-section">
+            <h2>Review Your Answers</h2>
+            {% for answer in answers %}
+                <div class="question">
+                    <h3>Q{{ loop.index }}: {{ answer.question }}</h3>
+                    <div class="options">
+                        {% for option in answer.options %}
+                            <p class="{% if loop.index0 == answer.correct_answer %}correct{% elif loop.index0 == answer.user_answer %}incorrect{% endif %}">
+                                {{ 'ABCD'[loop.index0] }}: {{ option }}
+                            </p>
+                        {% endfor %}
+                    </div>
+                    <p>Your Answer: {{ answer.options[answer.user_answer] }} ({{ 'Correct' if answer.user_answer == answer.correct_answer else 'Incorrect' }})</p>
+                    <p>Correct Answer: {{ answer.options[answer.correct_answer] }}</p>
+                </div>
+            {% endfor %}
+        </div>
+        <form action="{{ url_for('index') }}" method="get">
+            <button type="submit">Restart Quiz</button>
+        </form>
+    </div>
+</body>
+</html>

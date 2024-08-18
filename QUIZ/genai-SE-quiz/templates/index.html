@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #120E43, #9D0191); /* Gradient from deep blue to magenta */
+            color: #e0e0e0; /* Light grey text for good contrast */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            min-height: 100vh;
+        }
+
+        header {
+            width: 100%;
+            background-color: #162447;
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Distribute space between elements */
+            padding: 10px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+        }
+
+        header h1 {
+            font-size: 24px;
+            margin: 0;
+            color: #f5f5f5;
+            text-align: left;
+            flex-grow: 1; /* Allow the title to grow */
+        }
+
+
+        .container {
+            background: #9370DB;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 600px;
+            margin-top: 200px; /* Add margin to account for fixed header */
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        button {
+            background-color: #1b1b2f;
+            color: #ffffff;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .subtitle {
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #FF1493;
+            transform: scale(1.05);
+        }
+
+        label, select, input[type="range"] {
+            margin-top: 40px;
+            display: block;
+            text-align: left;
+            font-size: 18px; /* Increased font size */
+            font-weight: 400;
+        }
+
+        .container h2 {
+            font-size: 30px; /* Increased font size */
+            margin-bottom: 20px; /* Added spacing */
+        }
+
+        .container p {
+            font-size: 20px; /* Increased font size */
+            margin-bottom: 20px; /* Added spacing */
+        }
+
+        select, input[type="range"] {
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        .slider-value {
+            text-align: center;
+            margin-top: 5px;
+        }
+
+        /* Styling for the slider track */
+        input[type="range"] {
+            -webkit-appearance: none; /* Overrides default appearance */
+            width: 100%; /* Full-width */
+            height: 8px; /* Specified height for the track */
+            border-radius: 5px; /* Rounded corners for the track */
+            background: linear-gradient(to right, #120E43, #9D0191); /* Gradient background */
+            outline: none; /* Removes the outline */
+            opacity: 0.7; /* Slightly transparent */
+            transition: opacity 0.2s ease; /* Smooth transition for hover effects */
+        }
+
+        /* Styling for the slider thumb */
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none; /* Overrides default appearance */
+            appearance: none;
+            width: 20px; /* Width of the thumb */
+            height: 20px; /* Height of the thumb */
+            border-radius: 50%; /* Makes it circular */
+            background: #FFFFFF; /* White thumb */
+            cursor: pointer; /* Cursor appears as pointer */
+            box-shadow: 0 0 4px #000; /* Shadow for better visibility */
+            border: 2px solid #120E43; /* Dark blue border */
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px; /* Width of the thumb */
+            height: 20px; /* Height of the thumb */
+            border-radius: 50%; /* Makes it circular */
+            background: #FFFFFF; /* White thumb */
+            cursor: pointer; /* Cursor appears as pointer */
+            box-shadow: 0 0 4px #000; /* Shadow for better visibility */
+            border: 2px solid #120E43; /* Dark blue border */
+        }
+
+        /* Styling for the slider thumb on hover */
+        input[type="range"]:hover::-webkit-slider-thumb,
+        input[type="range"]:hover::-moz-range-thumb {
+            background: #FF1493; /* Changes thumb color to pink on hover */
+        }
+
+        /* Styling for the slider track on focus */
+        input[type="range"]:focus {
+            opacity: 1; /* Fully opaque on focus */
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const container = document.querySelector('.container');
+            container.classList.add('fade-in');
+
+            const temperatureSlider = document.getElementById('temperature');
+            const temperatureValue = document.getElementById('temperature-value');
+            temperatureSlider.addEventListener('input', () => {
+                temperatureValue.textContent = temperatureSlider.value;
+            });
+
+            const toppSlider = document.getElementById('top-p');
+            const toppValue = document.getElementById('top-p-value');
+            toppSlider.addEventListener('input', () => {
+                toppValue.textContent = toppSlider.value;
+            });
+        });
+    </script>
+</head>
+<body>
+    <header>
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Existing Logo" class="logo">
+        <h1>Social Media Scam Knowledge Check<br/><span class="subtitle">Powered by Large Language Model (Generative AI)</span></h1>
+        <img src="{{ url_for('static', filename='l.png') }}" alt="New Logo" class="logo2">
+        <img src="{{ url_for('static', filename='g.png') }}" alt="New Logo" class="logo1">
+        <img src="{{ url_for('static', filename='m.png') }}" alt="New Logo" class="logo1">
+    </header>
+    <div class="container">
+        <h2>Welcome to the Quiz!</h2>
+        <p>Total Questions: 25</p>
+        <form action="{{ url_for('question') }}" method="post">
+            <label for="model">Select LLM Model:</label>
+            <select name="model" id="model" required>
+                <option value="gemma-7b-it">Gemma 7B IT</option>
+                <option value="gemma2-9b-it">Gemma2 9B IT</option>
+                <option value="llama-3.1-70b-versatile">Llama 3.1 70B Versatile</option>
+                <option value="llama-3.1-8b-instant">Llama 3.1 8B Instant</option>
+                <option value="llama-guard-3-8b">Llama Guard 3 8B</option>
+                <option value="llama3-70b-8192">Llama3 70B 8192</option>
+                <option value="llama3-8b-8192">Llama3 8B 8192</option>
+                <option value="mixtral-8x7b-32768">Mixtral 8x7B 32768</option>
+            </select>
+
+            <label for="temperature">Temperature: <span id="temperature-value">0.5</span></label>
+            <input type="range" id="temperature" name="temperature" min="0" max="1" step="0.01" value="0.5">
+
+            <label for="top-p">Top-p: <span id="top-p-value">0.5</span></label>
+            <input type="range" id="top-p" name="top_p" min="0" max="1" step="0.01" value="0.5">
+
+            <button type="submit">Start Quiz</button>
+        </form>
+    </div>
+</body>
+</html>

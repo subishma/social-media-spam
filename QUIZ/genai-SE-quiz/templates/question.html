@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question {{ question_number }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #120E43, #9D0191); /* Gradient from deep blue to magenta */
+            color: #e0e0e0; /* Light grey text for good contrast */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            min-height: 100vh;
+        }
+
+        header {
+            width: 100%;
+            background-color: #162447; /* Darker header for thematic design */
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Align items to the left */
+            padding: 10px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+        }
+
+        header h1 {
+            font-size: 24px;
+            margin: 0;
+            color: #f5f5f5;
+            text-align: left;
+            flex-grow: 1; 
+        }
+
+        .subtitle {
+            font-size: 16px;
+        }
+
+        .container {
+            background: #2c2c54; /* Slightly lighter container background */
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 600px;
+            margin-top: 130px; /* Adjust margin for fixed header */
+            animation: fadeScaleIn 0.7s ease-out;
+            transform-origin: top center;
+        }
+
+        .choice {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #444444;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            color: #ffffff;
+            background-color: #505050;
+        }
+
+        .choice:hover {
+            background-color: #666666;
+        }
+
+        .choice input {
+            margin-right: 10px;
+        }
+
+        button {
+            background-color: #1f4068; /* Button color matching theme */
+            color: #ffffff;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #1b1b2f;
+            transform: scale(1.05);
+        }
+
+        label {
+            text-align: left;
+        }
+
+        @keyframes fadeScaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Progress bar styling */
+        .progress-container {
+            width: 100%;
+            background-color: #444444;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            height: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: #1f4068;
+            width: {{ (question_number / 25) * 100 }}%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            color: #ffffff;
+            top: 0;
+            left: 0;
+            font-size: 14px;
+            line-height: 20px;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const container = document.querySelector('.container');
+            container.classList.add('fadeScaleIn');
+        });
+    </script>
+</head>
+<body>
+    <header>
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="logo">
+        <h1>Social Media Scam Knowledge Check<br/><span class="subtitle">Powered by Large Language Model (Generative AI)</span></h1>
+        <img src="{{ url_for('static', filename='l.png') }}" alt="New Logo" class="logo2">
+        <img src="{{ url_for('static', filename='g.png') }}" alt="New Logo" class="logo1">
+        <img src="{{ url_for('static', filename='m.png') }}" alt="New Logo" class="logo1">
+    </header>
+    <div class="container">
+        <!-- Progress bar -->
+        <div class="progress-container">
+            <div class="progress-bar"></div>
+            <div class="progress-text">{{ question_number }} / 25</div>
+        </div>
+
+        <h2>Question {{ question_number }}</h2>
+        <p>{{ question['question'] }}</p>
+        <form action="{{ url_for('question') }}" method="post">
+            {% for option in question['options'] %}
+                <label class="choice">
+                    <input type="radio" name="choice" value="{{ loop.index0 }}" required> {{ option }}
+                </label>
+            {% endfor %}
+            <button type="submit">{{ 'Submit' if is_last_question else 'Next' }}</button>
+        </form>
+    </div>
+</body>
+</html>
